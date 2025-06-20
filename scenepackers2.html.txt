@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scenepack Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #ffffff;
+      padding: 2rem;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin-left: 10px;
+      background-color: #1db954;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #1e1e1e;
+      border-radius: 8px;
+    }
+    a {
+      color: #1db9ff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    hr {
+      border: 0;
+      height: 1px;
+      background: #333;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔍 Scenepack Search</h1>
+  <p>Type something like: <i>"elena crying scenepack"</i> or <i>"ken barbie edit mega"</i></p>
+
+  <input type="text" id="query" placeholder="Search scenepacks..." />
+  <button onclick="search()">Search</button>
+
+  <div id="results"></div>
+
+  <script>
+    async function search() {
+      const query = document.getElementById("query").value.trim();
+      if (!query) return alert("Please enter a search term!");
+
+      const apiKey = "AIzaSyB2VfwWMmnA8m5QOVyQcn4PmfGsIXPw5sM";
+      const cx = "9034f754e999445c9";
+      const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${apiKey}&cx=${cx}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const resultsDiv = document.getElementById("results");
+        resultsDiv.innerHTML = "";
+
+        if (!data.items || data.items.length === 0) {
+          resultsDiv.innerHTML = "<p>No results found. Try a different query.</p>";
+          return;
+        }
+
+        data.items.forEach(item => {
+          resultsDiv.innerHTML += `
+            <div class="result">
+              <a href="${item.link}" target="_blank">${item.title}</a>
+              <p>${item.snippet}</p>
+            </div>
+            <hr/>
+          `;
+        });
+
+      } catch (err) {
+        console.error("Error fetching results:", err);
+        document.getElementById("results").innerHTML = "<p>Something went wrong. Please try again later.</p>";
+      }
+    }
+  </script>
+
+</body>
+</html>
